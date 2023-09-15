@@ -1,0 +1,292 @@
+/* static/style.css */
+body {
+    font-family: Arial, sans-serif;
+    height: 80%;
+	margin: 50; 
+    padding: 0;
+   background: lightblue;
+   position:relative;
+   
+      
+}
+
+.chat-container {
+    margin-top: 10%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 10px;
+    border: 0px solid #1b6675;
+    border-radius: 2px;
+    box-shadow: 0px 0px 4px #3266b9;
+    margin-top: auto;
+    background-color: #3266b9;
+    max-height: 40px;
+    margin: 10px auto; /* Center the container horizontally */
+    margin-top: 30px;
+    top: 10px;
+    
+    
+    
+    
+}
+
+.chat-box {
+    height: 500px;
+    overflow-y: scroll;
+    border: 0px solid #ccc;
+    padding: 10px;
+    background-color: #cfdcdf;
+    position: relative;
+    bottom: 77px;
+    width: 400px;
+    right: 10px;
+
+}
+
+.user-message {
+    
+     
+        margin-top: 10px;
+        width: fit-content;
+        margin-bottom: 10px;
+        margin-left: auto;
+        border-radius: 10px;
+        background-color: rgb(38, 172, 103);
+        padding: 5px 10px;
+        text-align: right;
+        position: relative;
+        display: block; 
+         clear: both; 
+        /* max-width: 80%; */
+    overflow: hidden;
+    word-wrap: break-word; 
+    white-space: pre-wrap;
+    
+  
+}
+    
+     
+     
+ 
+
+
+.bot-message {
+    background-color: #218ec5db;
+    color: #333;
+    text-align: left;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    display: inline-block;
+    max-width: 80%;
+    align-self: flex-start;
+    animation: fadeIn 0.5s ease-in-out 1s forwards; 
+    opacity: 0; 
+    transform: translateX(-10px); 
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateX(0); 
+    }
+}
+
+
+input[type="text"] {
+    
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #cfdcdf;
+    border-radius: 5px;
+    position: relative;
+    bottom: 87px;
+    width: 500px;
+
+}
+/* Style the Submit button */
+button#submit-button {
+    width: 15%; /* Adjust the width as needed */
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 5px; /* Add some space between the input and button */
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50; /* Green background color */
+    color: #fff; /* White text color */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.icon-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff00;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    left: 355px;
+    bottom: 125px;
+}
+
+/* Change button background color on hover */
+button#submit-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+
+header {
+    text-align: left;
+    margin-bottom: 20px;
+    
+}
+
+/* Style the logo */
+/* header img {
+    max-width: 40px;
+    height: auto;
+    margin-bottom: 10px;
+    position: relative;
+    top: 10px;
+    left: 365px;
+    
+} */
+
+img.logo{
+    max-width: 220px;
+    height: auto;
+    margin-bottom: 10px;
+    position: relative;
+    top: -2px;
+    left: 180px;
+
+}
+img.avatar{
+    max-width: 40px;
+    height: auto;
+    margin-bottom: 10px;
+    position: relative;
+    top: 0px;
+    left: -220px;
+
+}
+
+/* Style the heading */
+header h1 {
+    font-family: Arial, sans-serif;
+    color: #fff;
+    font-size: 20px; /* Adjust the font size as needed */
+    margin: 0;
+    position: relative;
+    bottom: 60px;
+    left: 48px;
+    
+}
+
+/* static/style.css */
+
+/* ... (Your existing CSS) ... */
+
+/* Add animation to user and bot messages */
+/* .user-message, .bot-message {
+    animation: fadeIn 0.5s ease;
+    opacity: 0;
+    transform: translateY(10px);
+} */
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Style user messages differently */
+.user-message {
+    background-color: #007bff; /* Blue background color for user messages */
+    color: #fff; /* White text color */
+}
+
+/* Style bot messages differently */
+.bot-message {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Add smooth scrolling to the chat box */
+.chat-box {
+    scroll-behavior: smooth;
+}
+
+/* Style the input box */
+input[type="text"] {
+    width: 402px;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #c2c8ce; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    position: relative;
+    right: 12px;
+}
+
+/* Style the Submit button */
+button#submit-button {
+    width: 15%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 25px; /* Rounded corners */
+    background-color: #007bff; /* Blue background color */
+    color: #fff; /* White text color */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Change button background color on hover */
+button#submit-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Add this section to style the .score-message class */
+.score-message {
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    display: inline-block;
+    max-width: 80%;
+    align-self: flex-start;
+    animation: fadeIn 0.5s ease-in-out 1s forwards; 
+    opacity: 0; 
+    transform: translateX(-10px);
+}
+
+/* Additional styles for .score-message */
+.score-message:hover {
+    background-color: #444; /* Darker background color on hover */
+}
+
+/* Adjust the font size and margin for .score-message */
+.score-message {
+    font-size: 14px; /* Adjust the font size as needed */
+    margin-top: 5px; /* Add space at the top */
+}
+.end-message {
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    display: inline-block;
+    max-width: 80%;
+    align-self: flex-start;
+    animation: fadeIn 1s ease-in-out 3s forwards; 
+    opacity: 0; 
+    transform: translateX(-10px);
+}

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <title>AskVedas</title>
+    </head>
+    <body>
+        <div class="container chat-container">
+            <header>
+                <!-- Add the logo here -->
+                <img class="logo" src="{{ url_for('static', filename='logo.png') }}" alt="AYUSH Ministry">
+                <img class="avatar" src="{{ url_for('static', filename='logo1.png') }}" alt="VEDAS Avatar">
+                <h1>Ask
+                    <br>
+                    VEDAS</h1>
+            </header>
+
+            <div
+                class="chat-box" id="chat-box">
+                <!-- Initial bot messages and user information collection -->
+                <div class="bot-message">
+                    Hello, I'm VEDAS,<br>
+                    Your personal Prakruti Analysis Doctor. I will help you know your prakruti by asking some questions. On the basis of your response, I will recommend you some food and lifestyle changes so that you can live a healthy life.
+                </div>
+                <div class="bot-message">
+                    To get started, please provide the following information:
+                </div>
+                <!-- User information input -->
+                <div class="bot-message">
+                    What can I call You?
+                </div>
+            </div>
+            <input type="text" id="user-input" placeholder="Type here...">
+            <button class="icon-button" onclick="submitUserMessage()">
+                <img src="{{ url_for('static', filename='send.png') }}" alt="Icon" width="30px" height="20px"></button>
+            <div id="quiz-questions" style="display: none;">
+                <div id="question-text"></div>
+                <button id="answer-yes">Yes</button>
+                <button id="answer-no">No</button>
+            </div>
+        </div>
+
+        <script>
+            const chatBox = document.getElementById('chat-box');
+            const userInput = document.getElementById('user-input');
+            const submitButton = document.getElementById('submit-button');
+            const questionText = document.getElementById('question-text');
+            const answerYesButton = document.getElementById('answer-yes');
+            const answerNoButton = document.getElementById('answer-no');
+
+            // Track the user information
+            let userInfo = {
+                name: '',
+                phoneNumber: '',
+                age: '',
+                gender: ''
+            };
+
+            // Step to track the current information being collected
+            let currentStep = 'name';
+
+            const nameRegex = /^[A-Za-z]+$/;
+            const phoneNumberRegex = /^[0-9]+$/;
+            const ageRegex = /^[0-9]+$/;
+            const genderRegex = /^[A-Za-z]+$/;
+
+            // Questions for the quiz
+            const questions = [
+                {
+                    label: 'Q1',
+                    text: "Whether your skin remains oily throughout the year in comparison to others?"
+                },
+                {
+                    label: 'Q2',
+                    text: "Do you change your body posture frequently?"
+                },
+                {
+                    label: 'Q3',
+                    text: "Are you lazy and disinterested in activities like morning walk/jogging, swimming, or any type of outdoor games?"
+                },
+                {
+                    label: 'Q4',
+                    text: "Do you feel hungry more frequently and do you consume more food in comparison to others?"
+                }, {
+                    label: 'Q5',
+                    text: "Have you got a good/attractive complexion?"
+                }, {
+                    label: 'Q6',
+                    text: "Have you got well-built muscles?"
+                }, {
+                    label: 'Q7',
+                    text: "Do you think you have intense sexual desire?"
+                }, {
+                    label: 'Q8',
+                    text: "Do you get irritated easily?"
+                }, {
+                    label: 'Q9',
+                    text: "Among your family members, is your complexion considered fairer?"
+                }, {
+                    label: 'Q10',
+                    text: "Are sounds produced frequently in your joints on movement?"
+                }, {
+                    label: 'Q11',
+                    text: "Are you more comfortable in winter than summer?"
+                }, {
+                    label: 'Q12',
+                    text: "Do you have excessive black moles, freckles, etc. on your skin?"
+                }, {
+                    label: 'Q13',
+                    text: "Have you experienced premature graying, wrinkling of skin & early baldness?"
+                }, {
+                    label: 'Q14',
+                    text: "Do you have soft, scanty, brown hair on your face, body & head?"
+                }, {
+                    label: 'Q15',
+                    text: "Do you involve yourself in risky & heroic activities requiring physical strength often?"
+                }, {
+                    label: 'Q16',
+                    text: "Do you have the ability to digest large quantities of food easily?"
+                }, {
+                    label: 'Q17',
+                    text: "Do you consume food more frequently than others? (5-6 times/day)"
+                }, {
+                    label: 'Q18',
+                    text: "Do you have soft & loose muscle bulk especially around the joints?"
+                }, {
+                    label: 'Q19',
+                    text: "In comparison to others, do you pass urine & stool in large quantities and do you perspire more?"
+                }, {
+                    label: 'Q20',
+                    text: "Do your friends complain of bad smell being emitted from your body & mouth?"
+                }, {
+                    label: 'Q21',
+                    text: "Is your long-term memory weak?"
+                }, {
+                    label: 'Q22',
+                    text: "Do you generally learn things quickly?"
+                }, {
+                    label: 'Q23',
+                    text: "Are you easily caught by diseases like flu, allergy during seasonal changes?"
+                }, {
+                    label: 'Q24',
+                    text: "Is your body undernourished?"
+                }, {
+                    label: 'Q25',
+                    text: "Are you comfortable in summer?"
+                }, {
+                    label: 'Q26',
+                    text: "Does your sleep last less than 6 hours per day? Or can your sleep be disturbed easily?"
+                }, {
+                    label: 'Q27',
+                    text: "Are your nails, teeth, hands, feet, and hairs on your body or face rough?"
+                }, {
+                    label: 'Q28',
+                    text: "Do you have cracks on the body, especially on the heels?"
+                }, {
+                    label: 'Q29',
+                    text: "Do you get frightened easily?"
+                }, {
+                    label: 'Q30',
+                    text: "Do you often feel stiffness in your body after exercise, traveling?"
+                }
+            ];
+
+            let currentQuestionIndex = 0;
+
+            userInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    submitUserMessage();
+                }
+            });
+
+            answerYesButton.addEventListener('click', () => {
+                submitUserAnswer('yes');
+            });
+
+            answerNoButton.addEventListener('click', () => {
+                submitUserAnswer('no');
+            });
+
+            function startQuiz() {
+                document.getElementById('quiz-questions').style.display = 'block';
+                displayNextQuestion();
+            }
+
+
+            function submitUserAnswer(answer) {
+                const userMessage = answer.trim().toLowerCase();
+                addUserMessage(userMessage);
+
+                if (currentQuestionIndex < questions.length) {
+                    const question = questions[currentQuestionIndex];
+                    // const userAnswer = { ['Q' + (currentQuestionIndex + 1)]: userMessage };
+                    const userAnswer = {
+                        [question.label]: userMessage,
+                        questionText: question.text // Pass the question text to the server
+                    };
+                    currentQuestionIndex++;
+                    displayNextQuestion();
+
+                    // Send the user answer to the server
+                    fetch('/ask', {
+                        method: 'POST',
+                        body: JSON.stringify(
+                            {'Q': userMessage, 'questionText': questionText}
+                        ),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => response.json()).then(data => {
+                        if (data.message) {
+                            addMessage('bot', data.message);
+                        }
+                        if (data.kapha_score !== undefined) {
+                            addMessage('bot', `Kapha Score: ${
+                                data.kapha_score
+                            }%`);
+                        }
+                        if (data.pitta_score !== undefined) {
+                            addMessage('bot', `Pitta Score: ${
+                                data.pitta_score
+                            }%`);
+                        }
+                        if (data.vata_score !== undefined) {
+                            addMessage('bot', `Vata Score: ${
+                                data.vata_score
+                            }%`);
+                        }
+                        if (data.content !== undefined) {
+                            addMessage('bot', data.content);
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            }
+            function displayNextQuestion() {
+                if (currentQuestionIndex < questions.length) {
+                    const question = questions[currentQuestionIndex];
+                    questionText.textContent = question.text;
+                } else { // Quiz is complete
+                    document.getElementById('quiz-questions').style.display = 'none';
+                    addUserMessage('Quiz is complete.');
+                }
+            }
+
+            // Function to add user's message to the chat box
+            function addUserMessage(message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('user-message');
+                messageDiv.textContent = message;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            // Function to add bot's message to the chat box
+            function addMessage(sender, message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add(`${sender}-message`);
+                messageDiv.textContent = message;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            // Update the event listener for the submit button
+            submitButton.addEventListener('click', () => {
+                if (currentStep === 'done') {
+                    startQuiz(); // Start the quiz when the user is done providing information
+                } else {
+                    submitUserMessage();
+                }
+            });
+
+            // Function to handle user's input and collect information
+            function submitUserMessage() {
+                const userMessage = userInput.value.trim().toLowerCase();
+                userInput.value = '';
+
+                if (currentStep === 'name') {
+                    if (! nameRegex.test(userMessage)) {
+                        addMessage('bot', 'Invalid input. Please enter a valid name with alphabets only.');
+                        return;
+                    }
+                    userInfo.name = userMessage;
+                    currentStep = 'phoneNumber';
+                    addMessage('user', `${
+                        userInfo.name
+                    }`);
+                    addMessage('bot', 'Great! Please enter your phone number.');
+                } else if (currentStep === 'phoneNumber') {
+                    if (! phoneNumberRegex.test(userMessage)) {
+                        addMessage('bot', 'Invalid input. Please enter a valid phone number with digits only.');
+                        return;
+                    }
+                    userInfo.phoneNumber = userMessage;
+                    currentStep = 'age';
+                    addMessage('user', ` ${
+                        userInfo.phoneNumber
+                    }`);
+                    addMessage('bot', 'Got it! Please enter your age.');
+                } else if (currentStep === 'age') {
+                    if (! ageRegex.test(userMessage)) {
+                        addMessage('bot', 'Invalid input. Please enter a valid age with digits only.');
+                        return;
+                    }
+                    userInfo.age = userMessage;
+                    currentStep = 'gender';
+                    addMessage('user', `${
+                        userInfo.age
+                    }`);
+                    addMessage('bot', 'Thanks! Please enter your gender (e.g., Male, Female, Other).');
+                } else if (currentStep === 'gender') {
+                    if (! genderRegex.test(userMessage)) {
+                        addMessage('bot', 'Invalid input. Please enter a valid gender with alphabets only.');
+                        return;
+                    }
+                    userInfo.gender = userMessage;
+                    currentStep = 'done';
+                    addMessage('user', `${
+                        userInfo.gender
+                    }`);
+                    addMessage('bot', 'Thank you for providing your information! Let\'s start the analysis.\n Here are some basic Instructions regarding the analysis\n1-You will be asked 30 questions\n2-You have to answer the questions in yes/no. \n 3-Remember answer the question honestly to get accurate analysis.\n 4- If you agree with the above point type yes to start');
+                    // Now, you can proceed with the quiz or further interactions.
+                } else {
+                    if (currentQuestionIndex < questions.length) {
+                        if (userMessage === 'yes' || userMessage === 'no') {
+                            addMessage('user', userMessage);
+                            addMessage('bot', questions[currentQuestionIndex].text);
+                            currentQuestionIndex++;
+                        } else {
+                            addMessage('user', userMessage);
+                            addMessage('bot', 'Please answer with either "yes" or "no".');
+                        }
+                    } else {
+                        addMessage('user', userMessage);
+
+                        fetch('/ask', {
+                            method: 'POST',
+                            body: JSON.stringify(
+                                {Q: userMessage}
+                            ),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => response.json()).then(data => {
+                            displayDoshaInfo(data);
+                        }).catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                }
+            }
+
+            // Function to display dosha scores and recommendations
+            function addStyledMessage(sender, message, cssClass) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add(`${sender}-message`, 'end-message'); // Add the specified CSS class
+                messageDiv.textContent = message;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            function displayEndMessages() {
+                const endMessage1 = `
+    Thank you for completing the analysis!
+    Your Kapha Dosha percent is: 67%
+    According to the analysis, you have a dominant Kapha dosha. You tend to be calm, stable, and compassionate. You often possess a strong physical constitution and are reliable and loyal friends. However, you can also be prone to sluggishness, weight gain, and resistance to change. Your calm demeanor may sometimes turn into complacency, and you may struggle with procrastination.
+    `;
+
+                const endMessage2 = `
+    Here are some tips to balance your Dosha and make you healthy:
+
+    1. Eat Wisely: Choose warm, light, and slightly spicy foods. Avoid heavy, oily, and sugary foods.
+
+    2. Stay Active: Do regular, energetic exercises like walking, jogging, or dancing.
+
+    3. Keep a Routine: Try to wake up and go to bed at the same times each day, and have regular meal times.
+
+    4. Stay Warm: Keep warm, especially in cold weather, and wear comfy clothes.
+
+    5. Stay Social: Don't isolate yourself; stay connected with friends and family.
+
+    6. Express Yourself: Don't hold in your emotions. Talk about how you feel.
+
+    7. Drink Water: Stay hydrated, and herbal teas are good too.
+
+    8. Detox Occasionally: Consider fasting or cleansing rituals now and then.
+
+    9. Get Professional Advice: Talk to an Ayurvedic expert for personalized guidance.
+    `;
+
+                // Display the end messages one after the other
+                addMessage('bot', endMessage1,'end-message');
+                addMessage('bot', endMessage2,'end-message');
+            }
+
+
+            function displayDoshaInfo(data) { // Check if all questions have been asked, and if so, display the end message
+                if (currentQuestionIndex >= questions.length) {
+                    console.log('All questions have been asked.'); // Debug statement
+                    displayEndMessages();
+                } else {
+                    console.log('Not all questions have been asked yet.'); // Debug statement
+                }
+
+
+                // addMessage('bot', data.message);
+                if (data.scores) {
+                    const {kapha_score, pitta_score, vata_score} = data.scores;
+
+                    if (data.kapha_score !== undefined) {
+                        addMessage('bot', `Kapha Score: ${
+                            data.kapha_score
+                        }%`);
+                    }
+                    if (data.pitta_score !== undefined) {
+                        addMessage('bot', `Pitta Score: ${
+                            data.pitta_score
+                        }%`);
+                    }
+                    if (data.vata_score !== undefined) {
+                        addMessage('bot', `Vata Score: ${
+                            data.vata_score
+                        }%`);
+                    }
+                }
+
+                if (data.content !== undefined) {
+                    addMessage('bot', data.content);
+                }
+            }
+            function addMessage(sender, message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add(`${sender}-message`);
+                messageDiv.textContent = message;
+                chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                messageDiv.innerHTML = message.replace(/\n/g, '<br>');
+
+                if (message.includes('Score:')) {
+                    const scoreDiv = document.createElement('div');
+                    scoreDiv.classList.add('score-message');
+                    scoreDiv.textContent = message;
+                    chatBox.appendChild(scoreDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            }
+        </script>
+    </body>
+</html></div></body></html></body>
